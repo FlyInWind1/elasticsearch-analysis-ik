@@ -1,7 +1,7 @@
 /**
  * IK 中文分词  版本 5.0
  * IK Analyzer release 5.0
- * 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -35,7 +35,7 @@ import java.util.List;
  *
  */
 public final class IKSegmenter {
-	
+
 	//字符窜reader
 	private Reader input;
 	//分词器上下文
@@ -45,7 +45,7 @@ public final class IKSegmenter {
 	//分词歧义裁决器
 	private IKArbitrator arbitrator;
     private  Configuration configuration;
-	
+
 
 	/**
 	 * IK分词器构造函数
@@ -57,7 +57,7 @@ public final class IKSegmenter {
         this.init();
 	}
 
-	
+
 	/**
 	 * 初始化
 	 */
@@ -69,7 +69,7 @@ public final class IKSegmenter {
 		//加载歧义裁决器
 		this.arbitrator = new IKArbitrator();
 	}
-	
+
 	/**
 	 * 初始化词典，加载子分词器实现
 	 * @return List<ISegmenter>
@@ -77,14 +77,16 @@ public final class IKSegmenter {
 	private List<ISegmenter> loadSegmenters(){
 		List<ISegmenter> segmenters = new ArrayList<ISegmenter>(4);
 		//处理字母的子分词器
-		segmenters.add(new LetterSegmenter()); 
+		segmenters.add(new LetterSegmenter());
 		//处理中文数量词的子分词器
 		segmenters.add(new CN_QuantifierSegmenter());
 		//处理中文词的子分词器
 		segmenters.add(new CJKSegmenter());
+		//处理其他字符的子分词器
+		segmenters.add(new IKOtherChar());
 		return segmenters;
 	}
-	
+
 	/**
 	 * 分词，获取下一个词元
 	 * @return Lexeme 词元对象
@@ -103,7 +105,7 @@ public final class IKSegmenter {
 				//reader已经读完
 				context.reset();
 				return null;
-				
+
 			}else{
 				//初始化指针
 				context.initCursor();
@@ -128,7 +130,7 @@ public final class IKSegmenter {
 			//将分词结果输出到结果集，并处理未切分的单个CJK字符
 			context.outputToResult();
 			//记录本次分词的缓冲区位移
-			context.markBufferOffset();			
+			context.markBufferOffset();
 		}
 		return l;
 	}
